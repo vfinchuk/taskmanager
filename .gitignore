@@ -15,4 +15,5 @@ node_modules/
 build/
 
 # файлы сборки
-public/bundle.js
+/public/bundle.js*
+
