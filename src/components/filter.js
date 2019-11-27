@@ -1,7 +1,4 @@
-
-export const createFilterTemplate = () => {
-  return (
-    `<section class="main__filter filter container">
+export const createFilterTemplate = () => `<section class="main__filter filter container">
         <input
           type="radio"
           id="filter__all"
@@ -68,6 +65,4 @@ export const createFilterTemplate = () => {
         <label for="filter__archive" class="filter__label"
           >Archive <span class="filter__archive-count">115</span></label
         >
-      </section>`
-  );
-};
+      </section>`;

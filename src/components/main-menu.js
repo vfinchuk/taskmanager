@@ -1,7 +1,4 @@
-
-export const createMainMenuTemplate = () => {
-  return (
-    `<section class="control__btn-wrap">
+export const createMainMenuTemplate = () => `<section class="control__btn-wrap">
           <input
             type="radio"
             name="control"
@@ -28,6 +25,4 @@ export const createMainMenuTemplate = () => {
           <label for="control__statistic" class="control__label"
             >STATISTICS</label
           >
-        </section>`
-  );
-};
+        </section>`;
