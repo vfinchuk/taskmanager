@@ -9,8 +9,8 @@ import {generateTasks} from './mock/task';
 import {generateFilters} from './mock/filter';
 
 const TASK_COUNT = 22;
-const SHOWING_TASKS_COUNT_ON_START = 3;
-const SHOWING_TASKS_COUNT_BY_BUTTON = 1;
+const SHOWING_TASKS_COUNT_ON_START = 8;
+const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
 
 /**
