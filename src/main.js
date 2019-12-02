@@ -8,20 +8,12 @@ import {createLoadMoreButtonTemplate} from './components/load-more-button';
 import {generateTasks} from './mock/task';
 import {generateFilters} from './mock/filter';
 
+import {render, RenderPosition} from './utils.js';
+
 const TASK_COUNT = 22;
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
-
-/**
- * Rendering template
- * @param {node} container - where to render template
- * @param {string} template - rendering template
- * @param {string} place - rendering position
- */
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
 
 
 const mainElement = document.querySelector(`.main`);
