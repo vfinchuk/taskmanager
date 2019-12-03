@@ -17,7 +17,7 @@ const TASK_COUNT = 22;
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
-const renderTask = (task) => {
+const renderTask = (taskListElement, task) => {
   const onEscapeKeyDown = (evt) => {
     const isEscapeKey = evt.key === `Escape` || evt.key === `Esc`;
 
@@ -62,26 +62,37 @@ render(mainElement, new FilterComponent(filters).getElement(), RenderPosition.BE
 const boardComponent = new BoardComponent();
 render(mainElement, boardComponent.getElement(), RenderPosition.BEFOREEND);
 
-const taskListElement = boardComponent.getElement().querySelector(`.board__tasks`);
+
 const tasks = generateTasks(TASK_COUNT);
+const isAllTasksArchived = tasks.every((task) => task.isArchive);
+
+if (isAllTasksArchived) {
+  render(boardComponent.getElement(), new NoTasksComponent().getElement(), RenderPosition.BEFOREEND);
+} else {
+  render(boardComponent.getElement(), new SortComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardComponent.getElement(), new TasksComponent().getElement(), RenderPosition.BEFOREEND);
+
+  const taskListElement = boardComponent.getElement().querySelector(`.board__tasks`);
+
+  let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
+  tasks.slice(0, showingTasksCount).forEach((task) => renderTask(taskListElement, task));
 
 
-let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
-tasks.slice(1, showingTasksCount).forEach((task) => renderTask(task));
+  const loadMoreButtonComponent = new LoadMoreButtonComponent();
+  render(boardComponent.getElement(), loadMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+
+  loadMoreButtonComponent.getElement().addEventListener(`click`, () => {
+    const prevTasksCount = showingTasksCount;
+    showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+
+    tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => renderTask(taskListElement, task));
+
+    if (showingTasksCount >= tasks.length) {
+      loadMoreButtonComponent.getElement().remove();
+      loadMoreButtonComponent.removeElement();
+    }
+  });
+
+}
 
 
-const loadMoreButtonComponent = new LoadMoreButtonComponent();
-render(boardComponent.getElement(), loadMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
-
-loadMoreButtonComponent.getElement().addEventListener(`click`, () => {
-  const prevTasksCount = showingTasksCount;
-  showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
-
-  tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => renderTask(task));
-
-  if (showingTasksCount >= tasks.length) {
-    loadMoreButtonComponent.getElement().remove();
-    loadMoreButtonComponent.removeElement();
-  }
-
-});
