@@ -11,7 +11,7 @@ import LoadMoreButtonComponent from './components/load-more-button';
 import {generateTasks} from './mock/task';
 import {generateFilters} from './mock/filter';
 
-import {render, RenderPosition} from './utils.js';
+import {render, remove, replace, RenderPosition} from './utils/render';
 
 const TASK_COUNT = 22;
 const SHOWING_TASKS_COUNT_ON_START = 8;
@@ -28,11 +28,11 @@ const renderTask = (taskListElement, task) => {
   };
 
   const replaceEditToTask = () => {
-    taskListElement.replaceChild(taskComponent.getElement(), taskEditComponent.getElement());
+    replace(taskComponent, taskEditComponent);
   };
 
   const replaceTaskToEdit = () => {
-    taskListElement.replaceChild(taskEditComponent.getElement(), taskComponent.getElement());
+    replace(taskEditComponent, taskComponent);
   };
 
   const taskComponent = new TaskComponent(task);
@@ -47,39 +47,30 @@ const renderTask = (taskListElement, task) => {
   const editForm = taskEditComponent.getElement().querySelector(`form`);
   editForm.addEventListener(`submit`, replaceEditToTask);
 
-  render(taskListElement, taskComponent.getElement(), RenderPosition.BEFOREEND);
+  render(taskListElement, taskComponent, RenderPosition.BEFOREEND);
 };
 
-const mainElement = document.querySelector(`.main`);
-const siteHeaderElement = mainElement.querySelector(`.main__control`);
 
-render(siteHeaderElement, new SiteMenuComponent().getElement(), RenderPosition.BEFOREEND);
+const renderBoard = (boardComponent, tasks) => {
+  const isAllTasksArchived = tasks.every((task) => task.isArchive);
 
+  if (isAllTasksArchived) {
+    render(boardComponent.getElement(), new NoTasksComponent(), RenderPosition.BEFOREEND);
+    return;
+  }
 
-const filters = generateFilters();
-render(mainElement, new FilterComponent(filters).getElement(), RenderPosition.BEFOREEND);
-
-const boardComponent = new BoardComponent();
-render(mainElement, boardComponent.getElement(), RenderPosition.BEFOREEND);
-
-
-const tasks = generateTasks(TASK_COUNT);
-const isAllTasksArchived = tasks.every((task) => task.isArchive);
-
-if (isAllTasksArchived) {
-  render(boardComponent.getElement(), new NoTasksComponent().getElement(), RenderPosition.BEFOREEND);
-} else {
-  render(boardComponent.getElement(), new SortComponent().getElement(), RenderPosition.BEFOREEND);
-  render(boardComponent.getElement(), new TasksComponent().getElement(), RenderPosition.BEFOREEND);
+  render(boardComponent.getElement(), new SortComponent(), RenderPosition.BEFOREEND);
+  render(boardComponent.getElement(), new TasksComponent(), RenderPosition.BEFOREEND);
 
   const taskListElement = boardComponent.getElement().querySelector(`.board__tasks`);
+
 
   let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
   tasks.slice(0, showingTasksCount).forEach((task) => renderTask(taskListElement, task));
 
 
   const loadMoreButtonComponent = new LoadMoreButtonComponent();
-  render(boardComponent.getElement(), loadMoreButtonComponent.getElement(), RenderPosition.BEFOREEND);
+  render(boardComponent.getElement(), loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
   loadMoreButtonComponent.getElement().addEventListener(`click`, () => {
     const prevTasksCount = showingTasksCount;
@@ -88,11 +79,23 @@ if (isAllTasksArchived) {
     tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => renderTask(taskListElement, task));
 
     if (showingTasksCount >= tasks.length) {
-      loadMoreButtonComponent.getElement().remove();
-      loadMoreButtonComponent.removeElement();
+      remove(loadMoreButtonComponent);
     }
   });
+};
 
-}
 
+const siteMainElement = document.querySelector(`.main`);
+const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
+render(siteHeaderElement, new SiteMenuComponent(), RenderPosition.BEFOREEND);
+
+const filters = generateFilters();
+render(siteMainElement, new FilterComponent(filters), RenderPosition.BEFOREEND);
+
+const boardComponent = new BoardComponent();
+render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
+
+const tasks = generateTasks(TASK_COUNT);
+
+renderBoard(boardComponent, tasks);
