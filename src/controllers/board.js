@@ -58,12 +58,12 @@ export default class BoardController {
     const isAllTasksArchived = tasks.every((task) => task.isArchive);
 
     if (isAllTasksArchived) {
-      render(container.getElement(), new NoTasksComponent(), RenderPosition.BEFOREEND);
+      render(container.getElement(), this._noTasksComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    render(container.getElement(), new SortComponent(), RenderPosition.BEFOREEND);
-    render(container.getElement(), new TasksComponent(), RenderPosition.BEFOREEND);
+    render(container.getElement(), this._sortComponent, RenderPosition.BEFOREEND);
+    render(container.getElement(), this._tasksComponent, RenderPosition.BEFOREEND);
 
     const taskListElement = container.getElement().querySelector(`.board__tasks`);
 
@@ -72,17 +72,16 @@ export default class BoardController {
     tasks.slice(0, showingTasksCount).forEach((task) => renderTask(taskListElement, task));
 
 
-    const loadMoreButtonComponent = new LoadMoreButtonComponent();
-    render(container.getElement(), loadMoreButtonComponent, RenderPosition.BEFOREEND);
+    render(container.getElement(), this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    loadMoreButtonComponent.setClickHandler(() => {
+    this._loadMoreButtonComponent.setClickHandler(() => {
       const prevTasksCount = showingTasksCount;
       showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
 
       tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => renderTask(taskListElement, task));
 
       if (showingTasksCount >= tasks.length) {
-        remove(loadMoreButtonComponent);
+        remove(this._loadMoreButtonComponent);
       }
     });
   }
