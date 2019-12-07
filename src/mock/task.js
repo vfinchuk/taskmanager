@@ -1,5 +1,5 @@
 import {Colors} from '../const';
-import {getRandomIntegerNumber} from '../utils';
+import {getRandomIntegerNumber} from '../utils/common';
 
 
 const DescriptionItems = [
