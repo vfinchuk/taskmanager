@@ -107,7 +107,7 @@ export default class BoardController {
         case SortType.DATE_DOWN:
           sortedTasks = tasks.slice().sort((a, b) => b.dueDate - a.dueDate);
           break;
-        case SortType.DAFAULT:
+        case SortType.DEFAULT:
           sortedTasks = tasks.slice(0, showingTasksCount);
           break;
       }
@@ -115,7 +115,7 @@ export default class BoardController {
       taskListElement.innerHTML = ``;
       renderTasks(taskListElement, sortedTasks);
 
-      if (sortType === SortType.DAFAULT) {
+      if (sortType === SortType.DEFAULT) {
         renderLoadMoreButton();
       } else {
         remove(this._loadMoreButtonComponent);
