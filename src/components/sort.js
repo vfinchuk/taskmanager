@@ -33,7 +33,7 @@ export default class Sort extends AbstractComponent {
       evt.preventDefault();
 
       if (evt.target.tagName !== `A`) {
-        return; DATE_UP;
+        return;
       }
 
       const sortType = evt.target.dataset.sortType;
